@@ -1,15 +1,18 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(SpriteRenderer))]
 public class AnimatedSpriteRenderer : MonoBehaviour
 {
     private SpriteRenderer spriteRenderer;
 
+    public float animationTime = 0.25f;
+    //每帧动画的持续时间
+    private int animationFrame;
+
     public Sprite idleSprite;
     public Sprite[] animationSprites;
 
-    public float animationTime = 0.25f;
-    private int animationFrame;
 
     public bool loop = true;
     public bool idle = true;
@@ -27,26 +30,34 @@ public class AnimatedSpriteRenderer : MonoBehaviour
     private void OnDisable()
     {
         spriteRenderer.enabled = false;
+
     }
 
     private void Start()
     {
-        InvokeRepeating(nameof(NextFrame), animationTime, animationTime);
+        InvokeRepeating(nameof(nextFrame), animationTime,animationTime) ;
     }
 
-    private void NextFrame()
+    private void nextFrame()
     {
         animationFrame++;
 
-        if (loop && animationFrame >= animationSprites.Length) {
+        if(loop && animationFrame >= animationSprites.Length)
+        {
             animationFrame = 0;
         }
 
-        if (idle) {
+        if (idle)
+        {
             spriteRenderer.sprite = idleSprite;
-        } else if (animationFrame >= 0 && animationFrame < animationSprites.Length) {
+        }
+
+        else if( animationFrame >= 0 && animationFrame <= animationSprites.Length)
+        {
             spriteRenderer.sprite = animationSprites[animationFrame];
         }
+
+        
     }
 
 }

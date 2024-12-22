@@ -1,53 +1,35 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-[DefaultExecutionOrder(-1)]
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance { get; private set; }
-
-    private GameObject[] players;
-
-    private void Awake()
-    {
-        if (Instance != null) {
-            DestroyImmediate(gameObject);
-        } else {
-            Instance = this;
-        }
-    }
-
-    private void OnDestroy()
-    {
-        if (Instance == this) {
-            Instance = null;
-        }
-    }
-
-    private void Start()
-    {
-        players = GameObject.FindGameObjectsWithTag("Player");
-    }
+    public GameObject[] players;
 
     public void CheckWinState()
     {
         int aliveCount = 0;
-
-        for (int i = 0; i < players.Length; i++)
+        
+        //ÕâÊÇÉ¶£¿£¿£¿
+        foreach (GameObject player in players)
         {
-            if (players[i].activeSelf) {
-                aliveCount++;
+            if (player.activeSelf)
+            {
+                aliveCount++; 
             }
         }
 
-        if (aliveCount <= 1) {
-            Invoke(nameof(NewRound), 3f);
+        if(aliveCount <=1)
+        {
+            Invoke(nameof(Newround),3f);
         }
+
+        
     }
 
-    private void NewRound()
+    private void Newround()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
-
 }

@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     {
         int aliveCount = 0;
         
-        //ÕâÊÇÉ¶£¿£¿£¿
+        //è¿™æ˜¯å•¥ï¼Ÿï¼Ÿï¼Ÿ
         foreach (GameObject player in players)
         {
             if (player.activeSelf)

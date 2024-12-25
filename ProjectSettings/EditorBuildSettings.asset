@@ -8,4 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/BoomerMan.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 0
+    path: Assets/Scenes/ui.unity
+    guid: 112e606eb6f9d54429a217e2dbd48d2f
   m_configObjects: {}

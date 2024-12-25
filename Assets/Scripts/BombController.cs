@@ -1,10 +1,11 @@
 using System.Collections;
-
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class BombController : MonoBehaviour
 {
+    public List<GameObject> bombs = new List<GameObject>();
     [Header("Bomb")]
     public GameObject bombPrefab;
     public KeyCode inputKey = KeyCode.Space;
@@ -12,8 +13,8 @@ public class BombController : MonoBehaviour
     public int bombAmount = 1;
     private int bombsRemaining;
 
-    //±¬Õ¨Ïà¹ØÉèÖÃ
-    //±êÍ·Óï·¨ ÊÇÉ¶£¿
+    //çˆ†ç‚¸ç›¸å…³è®¾ç½®
+    //æ ‡å¤´è¯­æ³• æ˜¯å•¥ï¼Ÿ
 
     [Header("Explosion")]
     public Explosion explosionPrfab;
@@ -46,14 +47,15 @@ public class BombController : MonoBehaviour
         position.y = Mathf.Round(position.y);
 
         GameObject bomb = Instantiate(bombPrefab, position, Quaternion.identity);
-        //´´½¨Ò»¸öĞÂµÄ bombPrefab Ô¤Éè¶ÔÏó¡£
-        //½«ĞÂ¶ÔÏó·ÅÖÃÔÚ position Ö¸¶¨µÄÎ»ÖÃ¡£
-        //½«ĞÂ¶ÔÏóµÄĞı×ªÉèÖÃÎªÄ¬ÈÏµÄÁãĞı×ª¡£
+        //åˆ›å»ºä¸€ä¸ªæ–°çš„ bombPrefab é¢„è®¾å¯¹è±¡ã€‚
+        //å°†æ–°å¯¹è±¡æ”¾ç½®åœ¨ position æŒ‡å®šçš„ä½ç½®ã€‚
+        //å°†æ–°å¯¹è±¡çš„æ—‹è½¬è®¾ç½®ä¸ºé»˜è®¤çš„é›¶æ—‹è½¬ã€‚
+        bombs.Add(bomb);
         bombsRemaining--;
 
         yield return new WaitForSeconds(bombFuseTime);
 
-        //ÍÆÕ¨µ¯
+        //æ¨ç‚¸å¼¹
         position = bomb.transform.position;
         position.x = Mathf.Round(position.x);
         position.y = Mathf.Round(position.y);
@@ -67,7 +69,7 @@ public class BombController : MonoBehaviour
         Explode(position,Vector2.down, explosionRadius);
         Explode(position,Vector2.left, explosionRadius);
         Explode(position,Vector2.right, explosionRadius);
-
+        bombs.Remove(bomb);
         Destroy(bomb);
         bombsRemaining++;
 
@@ -81,8 +83,8 @@ public class BombController : MonoBehaviour
         }
         position += direction;
 
-        //¼ì²â×©¿é
-        //·µ»ØÒ»¸öÅö×²¿ì£¿
+        //æ£€æµ‹ç –å—
+        //è¿”å›ä¸€ä¸ªç¢°æ’å¿«ï¼Ÿ
         if (Physics2D.OverlapBox(position , Vector2.one / 2f , 0f , explosionMask))
         {
             ClearDestrucible(position);
@@ -90,7 +92,7 @@ public class BombController : MonoBehaviour
         }
 
 
-        //±¬Õ¨µÄÂûÑÓ
+        //çˆ†ç‚¸çš„è”“å»¶
         Explosion explosion = Instantiate(explosionPrfab, position, Quaternion.identity);
         explosion.SetActiveRenderer(length > 1 ? explosion.Middle : explosion.End);
         explosion.SetDirection(direction);
@@ -121,7 +123,7 @@ public class BombController : MonoBehaviour
         bombsRemaining++;
     }
 
-    //ÉèÖÃ¿ÉÒÔÍÆÕ¨µ¯µÄº¯Êı
+    //è®¾ç½®å¯ä»¥æ¨ç‚¸å¼¹çš„å‡½æ•°
     private void OnTriggerExit2D(Collider2D other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Bomb"))

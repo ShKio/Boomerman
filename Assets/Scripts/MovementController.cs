@@ -8,12 +8,12 @@ public class MovementController : MonoBehaviour
     public new Rigidbody2D rigidbody { get; private set; }
     private Vector2 direction = Vector2.down;
     public float speed = 5f;
-    public KeyCode inputUp = KeyCode.W;
-    public KeyCode inputDown = KeyCode.S;
-    public KeyCode inputLeft = KeyCode.A;
-    public KeyCode inputRight = KeyCode.D;
-
-    //Ô¤ÉèµÄËÄ¸ö·½ÏòµÄ¶¯»­
+    public KeyCode inputUp = KeyCode.None;
+    public KeyCode inputDown = KeyCode.None;
+    public KeyCode inputLeft = KeyCode.None;
+    public KeyCode inputRight = KeyCode.None;
+    public int directionnum=0;
+    //é¢„è®¾çš„å››ä¸ªæ–¹å‘çš„åŠ¨ç”»
     public AnimatedSpriteRenderer spriteRendererUp;
     public AnimatedSpriteRenderer spriteRendererDown;
     public AnimatedSpriteRenderer spriteRendererLeft;
@@ -22,14 +22,14 @@ public class MovementController : MonoBehaviour
 
     public AnimatedSpriteRenderer spriteRendererDeath;
 
-    //½«ÒªÏÔÊ¾µÄ¶¯»­
+    //å°†è¦æ˜¾ç¤ºçš„åŠ¨ç”»
     private AnimatedSpriteRenderer activeSpriteRenderer;
 
     private void Awake()
     {
         rigidbody = GetComponent<Rigidbody2D>();
 
-        //ÉèÖÃ³õÊ¼»¯µÄ¶¯»­£¬ÏòÏÂ
+        //è®¾ç½®åˆå§‹åŒ–çš„åŠ¨ç”»ï¼Œå‘ä¸‹
         activeSpriteRenderer = spriteRendererDown;
     }
 
@@ -38,28 +38,50 @@ public class MovementController : MonoBehaviour
         if (Input.GetKey(inputUp))
         {
             SetDirection(Vector2.up,spriteRendererUp);
-        }
+            directionnum = 1;
+}
         else if (Input.GetKey(inputDown))
         {
             SetDirection(Vector2.down,spriteRendererDown);
-
+            directionnum = 2;
         }
         else if (Input.GetKey(inputLeft))
         {
-            //Debug.Log("×ó");
+            //Debug.Log("å·¦");
             SetDirection(Vector2.left,spriteRendererLeft);
-
+            directionnum = 3;
         }
         else if (Input.GetKey(inputRight))
         {
-            //Debug.Log("ÓÒ");
+            //Debug.Log("å³");
 
             SetDirection(Vector2.right,spriteRendererRight);
-
+            directionnum = 4;
         }
         else
         {
+            if(directionnum>0)
+            {
+                switch(directionnum)
+                {
+                    case 1:
+                        SetDirection(Vector2.up, spriteRendererUp);
+                        break;
+                    case 2:
+                        SetDirection(Vector2.down, spriteRendererUp);
+                        break;
+                    case 3:
+                        SetDirection(Vector2.left, spriteRendererUp);
+                        break;
+                    case 4:
+                        SetDirection(Vector2.right, spriteRendererUp);
+                        break;
+
+                }
+
+            }
             SetDirection(Vector2.zero,activeSpriteRenderer);
+            directionnum = 0;
         }
     }
 
@@ -71,17 +93,17 @@ public class MovementController : MonoBehaviour
         rigidbody.MovePosition(position + translation);
     }
 
-    private void SetDirection(Vector2 newDirection,AnimatedSpriteRenderer spriteRenderer)
+    public void SetDirection(Vector2 newDirection,AnimatedSpriteRenderer spriteRenderer)
     {
         direction = newDirection;
 
-        //ÉèÖÃ¸ÃÑ¡ÔñÄÄ¸ö¶¯»­²¥·Å
+        //è®¾ç½®è¯¥é€‰æ‹©å“ªä¸ªåŠ¨ç”»æ’­æ”¾
         spriteRendererUp.enabled = spriteRenderer == spriteRendererUp;
         spriteRendererDown.enabled = spriteRenderer == spriteRendererDown;
         spriteRendererLeft.enabled = spriteRenderer == spriteRendererLeft;
         spriteRendererRight.enabled = spriteRenderer == spriteRendererRight;
 
-        //Õ¹Ê¾¶¯»­
+        //å±•ç¤ºåŠ¨ç”»
         activeSpriteRenderer = spriteRenderer;
         activeSpriteRenderer.idle = direction == Vector2.zero;
     }

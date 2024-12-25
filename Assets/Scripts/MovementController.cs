@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -24,6 +25,8 @@ public class MovementController : MonoBehaviour
 
     //将要显示的动画
     private AnimatedSpriteRenderer activeSpriteRenderer;
+
+    public float sendCD;
 
     private void Awake()
     {
@@ -53,7 +56,6 @@ public class MovementController : MonoBehaviour
         else if (Input.GetKey(inputRight))
         {
             //Debug.Log("右");
-
             SetDirection(Vector2.right,spriteRendererRight);
 
         }
@@ -61,6 +63,25 @@ public class MovementController : MonoBehaviour
         {
             SetDirection(Vector2.zero,activeSpriteRenderer);
         }
+
+        
+    }
+
+    float ntime = 0;
+    /// <summary>
+    /// 发送位置信息
+    /// </summary>
+     void SendPosition()
+    {
+        ntime += Time.deltaTime;
+        if (ntime > sendCD)
+        {
+            PlayerInfo p = new PlayerInfo(gameObject.name, rigidbody.position.x, rigidbody.position.y);
+            ClientSocket.SendMessage(new Message("UpdatePlayerInfo", JsonConvert.SerializeObject(p)));
+            ntime= 0;
+        }
+        
+
     }
 
     private void FixedUpdate()
